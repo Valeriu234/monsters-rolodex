@@ -27,27 +27,27 @@ export default class App extends Component<object, AppState> {
       );
   }
 
-  render() {
-    const filterMonsters = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const searchString = e.target.value.toLowerCase();
-      const filteredMonsters: Array<Monster> = this.state.monsters.filter(
-        (monster) => {
-          if (monster.name.toLowerCase().includes(searchString)) {
-            return monster;
-          }
+  onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchString = e.target.value.toLowerCase();
+    const filteredMonsters: Array<Monster> = this.state.monsters.filter(
+      (monster) => {
+        if (monster.name.toLowerCase().includes(searchString)) {
+          return monster;
         }
-      );
-      this.setState({ filteredMonsters: filteredMonsters });
-    };
-
+      }
+    );
+    this.setState({ filteredMonsters: filteredMonsters });
+  };
+  render() {
+    const { filteredMonsters } = this.state;
     return (
       <div>
         <input
           type="text"
           placeholder="Search yuor monster"
-          onChange={filterMonsters}
+          onChange={this.onSearchChange}
         />
-        {this.state.filteredMonsters.map((monster) => (
+        {filteredMonsters.map((monster) => (
           <div key={monster.id}>
             <h1>{monster.name}</h1>
           </div>
