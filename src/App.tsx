@@ -1,35 +1,58 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import React, { Component } from "react";
+
 import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0);
-  console.log(count);
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  );
+type Monster = { name: string; id: string };
+
+interface AppState {
+  monsters: Array<Monster>;
+  filteredMonsters: Array<Monster>;
 }
 
-export default App;
+export default class App extends Component<object, AppState> {
+  constructor(props: object) {
+    super(props);
+    this.state = {
+      monsters: [],
+      filteredMonsters: [],
+    };
+  }
+  componentDidMount() {
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then((response) => response.json())
+      .then((users) =>
+        this.setState(() => {
+          return { monsters: users, filteredMonsters: users };
+        })
+      );
+  }
+
+  render() {
+    const filterMonsters = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const searchString = e.target.value.toLowerCase();
+      const filteredMonsters: Array<Monster> = this.state.monsters.filter(
+        (monster) => {
+          if (monster.name.toLowerCase().includes(searchString)) {
+            return monster;
+          }
+        }
+      );
+      this.setState({ filteredMonsters: filteredMonsters });
+    };
+
+    return (
+      <div>
+        <input
+          type="text"
+          placeholder="Search yuor monster"
+          onChange={filterMonsters}
+        />
+        {this.state.filteredMonsters.map((monster) => (
+          <div key={monster.id}>
+            <h1>{monster.name}</h1>
+          </div>
+        ))}
+      </div>
+    );
+  }
+}
