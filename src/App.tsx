@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 
+import SearchBoxComponent from "./components/search-box/search-box.component.tsx";
+import CardListComponent from "./components/card-list/card-list.component.tsx";
+
 import "./App.css";
 
-type Monster = { name: string; id: string };
+export type Monster = { name: string; id: string; email: string };
 
 interface AppState {
   monsters: Array<Monster>;
@@ -36,22 +39,20 @@ export default class App extends Component<object, AppState> {
         }
       }
     );
-    this.setState({ filteredMonsters: filteredMonsters });
+    this.setState({ filteredMonsters });
   };
+
   render() {
     const { filteredMonsters } = this.state;
     return (
-      <div>
-        <input
-          type="text"
-          placeholder="Search yuor monster"
-          onChange={this.onSearchChange}
+      <div className="App">
+        <h1 className="app-title">Monsters Rolodex</h1>
+        <SearchBoxComponent
+          onChangeHandler={this.onSearchChange}
+          placeholder={"Search monsters"}
+          className={"search-input"}
         />
-        {filteredMonsters.map((monster) => (
-          <div key={monster.id}>
-            <h1>{monster.name}</h1>
-          </div>
-        ))}
+        <CardListComponent filteredMonsters={filteredMonsters} />
       </div>
     );
   }
